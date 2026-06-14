@@ -237,11 +237,9 @@ function buildCard(match) {
 
   const resolvedStreams = resolveStreams(match);
   const streamCount = resolvedStreams.length;
-  const streamHint = (isLive || status === 'NS') && streamCount > 0
+  const streamHint = streamCount > 0
     ? `<div class="stream-hint"><span class="s-dot"></span>${streamCount} stream tersedia</div>`
-    : (isLive || status === 'NS')
-        ? `<div class="stream-hint" style="color:var(--muted)">Paste URL stream manual</div>`
-        : '';
+    : '';
 
   const statusCls = isLive ? 'live-card' : isFT ? 'ft-card' : 'ns-card';
   const cardCls = `match-card ${statusCls}`;
