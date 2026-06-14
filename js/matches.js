@@ -217,7 +217,7 @@ const MATCHES = [
     home:'Australia', away:'Türkiye',
     utc:'2026-06-14T04:00:00Z',
     venue:'BC Place, Vancouver',
-    homeScore:null, awayScore:null, status:'FT',
+    homeScore:2, awayScore:0, status:'FT',
     matchCode:'A_VS_T',   // ✅ CONFIRMED
     streams:[]
   },

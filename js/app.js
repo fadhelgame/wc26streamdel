@@ -29,6 +29,7 @@ function init() {
   });
 
   renderList();
+  syncScoresFromESPN(); // fetch live ESPN scores on load
 }
 
 // ─── POLLING ENGINE ───────────────────────────────────────────────────────────
@@ -46,6 +47,9 @@ function startPolling() {
 function poll() {
   // ── Refresh status match & UI selalu jalan (local-only, no API) ──────
   refreshStatuses();
+
+  // ── ESPN score sync — cheap, CORS-open, update scores live ───────────
+  syncScoresFromESPN();
 
   // ── Tapi fetch ke API cuma kalo ada match yg relevan ────────────────
   if (!hasUpcomingMatches()) {
@@ -529,6 +533,113 @@ function loadCustomUrl() {
 document.getElementById('url-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') loadCustomUrl();
 });
+
+// ─── ESPN LIVE SCORE SYNC ─────────────────────────────────────────────────────
+// Fetch scores from ESPN public API (CORS-open, no key needed).
+// Runs on init + every poll to keep results and live scores current.
+const ESPN_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
+
+// ESPN team name → our MATCHES team name
+const ESPN_NAME_MAP = {
+  'United States':                'USA',
+  'Bosnia and Herzegovina':       'Bosnia & Herz.',
+  'Bosnia-Herzegovina':           'Bosnia & Herz.',
+  'Bosnia Herzegovina':           'Bosnia & Herz.',
+  "Côte d'Ivoire":                'Ivory Coast',
+  "Cote d'Ivoire":                'Ivory Coast',
+  'Congo DR':                     'DR Congo',
+  'Democratic Republic of Congo': 'DR Congo',
+  'Cabo Verde':                   'Cape Verde',
+  'Korea Republic':               'South Korea',
+  'Czech Republic':               'Czechia',
+};
+function espnName(n) { return ESPN_NAME_MAP[n] || n; }
+
+function toDateStr(d) {
+  return d.getFullYear()
+    + String(d.getMonth() + 1).padStart(2, '0')
+    + String(d.getDate()).padStart(2, '0');
+}
+
+async function fetchESPNDate(dateStr) {
+  try {
+    const res = await fetch(`${ESPN_URL}?dates=${dateStr}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    let changed = false;
+    (data.events || []).forEach(event => {
+      const comp = event.competitions?.[0];
+      if (!comp) return;
+      let homeC, awayC;
+      (comp.competitors || []).forEach(c => {
+        if (c.homeAway === 'home') homeC = c;
+        else awayC = c;
+      });
+      if (!homeC || !awayC) return;
+
+      const homeName  = espnName(homeC.team.displayName);
+      const awayName  = espnName(awayC.team.displayName);
+      const homeScore = homeC.score != null ? parseInt(homeC.score) : null;
+      const awayScore = awayC.score != null ? parseInt(awayC.score) : null;
+      const state     = comp.status?.type?.state;       // 'pre'|'in'|'post'
+      const completed = comp.status?.type?.completed;
+      const clock     = comp.status?.displayClock;
+
+      const match = MATCHES.find(m => m.home === homeName && m.away === awayName);
+      if (!match) return;
+
+      if (homeScore !== null && awayScore !== null) {
+        if (match.homeScore !== homeScore || match.awayScore !== awayScore) {
+          match.homeScore = homeScore;
+          match.awayScore = awayScore;
+          changed = true;
+        }
+      }
+      if ((completed || state === 'post') && match.status !== 'FT') {
+        match.status = 'FT';
+        changed = true;
+      }
+      if (state === 'in') {
+        match._espnClock = clock || '';
+      }
+    });
+    return changed;
+  } catch (e) {
+    console.warn('ESPN sync failed:', e);
+    return false;
+  }
+}
+
+async function syncScoresFromESPN() {
+  const datesToFetch = new Set();
+
+  // Always fetch today
+  const today = new Date();
+  datesToFetch.add(toDateStr(today));
+
+  // Yesterday (UTC late matches may bleed into next calendar day locally)
+  const yest = new Date(today);
+  yest.setDate(today.getDate() - 1);
+  datesToFetch.add(toDateStr(yest));
+
+  // Any past match that has null scores (backfill)
+  MATCHES.forEach(m => {
+    if (m.homeScore === null && new Date(m.utc) < today) {
+      datesToFetch.add(toDateStr(new Date(m.utc)));
+    }
+  });
+
+  let anyChange = false;
+  for (const d of datesToFetch) {
+    const changed = await fetchESPNDate(d);
+    if (changed) anyChange = true;
+  }
+
+  if (anyChange) {
+    renderList();
+    if (currentMatch) updateInfoBar(currentMatch);
+  }
+}
 
 // ─── START ────────────────────────────────────────────────────────────────────
 init();
