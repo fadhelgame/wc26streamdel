@@ -24,9 +24,17 @@ function genStreams(code) {
 }
 
 // ─── AUTO-FETCH DARI LIVE API (gantikan match code tebakan!) ────────────────
-// Fungsi ini dipanggil otomatis tiap 30 detik. Cocokin match di MATCHES
-// dgn data dari API reference site → inject URL stream asli.
+// Fungsi ini dipanggil otomatis tiap 60 detik (pas ada match) atau manual.
+// Otomatis cooldown 2 menit kalo stream udah kedetect, hemat invocation.
+let lastFetchTime = 0;
+const FETCH_COOLDOWN = 120000; // 2 menit
+
 async function fetchLiveStreams() {
+  // ── Cooldown: skip kalo barusan fetch ────────────────────────────────
+  const now = Date.now();
+  if (now - lastFetchTime < FETCH_COOLDOWN) return;
+  lastFetchTime = now;
+
   try {
     const res = await fetch(PROXY_API + '?type=live');
     if (!res.ok) return;

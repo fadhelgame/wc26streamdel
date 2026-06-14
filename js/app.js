@@ -16,11 +16,8 @@ function init() {
   updateClock();
   setInterval(updateClock, 1000);
 
-  // Auto-fetch stream URL dari reference site (gantikan match code tebakan!)
-  fetchLiveStreams();
-  setInterval(fetchLiveStreams, 30000);
-
-  setInterval(refreshStatuses, 30000);
+  // Auto-fetch & status refresh digabung jadi 1 interval hemat
+  startPolling();
 
   document.querySelectorAll('.tab').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -32,6 +29,43 @@ function init() {
   });
 
   renderList();
+}
+
+// ─── POLLING ENGINE ───────────────────────────────────────────────────────────
+// Hemat Netlify Function invocation:
+//  - Gabung fetchLiveStreams + refreshStatuses jadi 1 interval
+//  - Cuma fetch ke API kalo ada match yg akan/ sedang live (dalam 3 jam)
+//  - Kalo match udah punya stream, cooldown 2 menit sebelum fetch ulang
+let pollInterval = null;
+
+function startPolling() {
+  fetchLiveStreams(); // langsung jalan pas buka web
+  pollInterval = setInterval(poll, 60000); // tiap 60 detik, bukan 30!
+}
+
+function poll() {
+  // ── Refresh status match & UI selalu jalan (local-only, no API) ──────
+  refreshStatuses();
+
+  // ── Tapi fetch ke API cuma kalo ada match yg relevan ────────────────
+  if (!hasUpcomingMatches()) {
+    return; // skip API call, hemat Netlify Function invocation
+  }
+
+  // ── Fetch stream terbaru (cooldown 2m ada di dalam) ──────────────────
+  fetchLiveStreams();
+}
+
+function hasUpcomingMatches() {
+  const now = Date.now();
+  const windowStart = now - 2 * 60 * 60 * 1000; // 2 jam lalu (match selesai)
+  const windowEnd   = now + 4 * 60 * 60 * 1000; // 4 jam ke depan
+
+  return MATCHES.some(m => {
+    if (m.status === 'FT') return false;
+    const kickoff = new Date(m.utc).getTime();
+    return kickoff >= windowStart && kickoff <= windowEnd;
+  });
 }
 
 // ─── CLOCK ───────────────────────────────────────────────────────────────────
