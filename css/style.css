@@ -178,15 +178,7 @@ html, body {
 }
 .match-card.ft-card .card-time { color: var(--muted); }
 
-/* NS (akan datang) — border accent tipis + efek glow kecil */
-.match-card.ns-card {
-    border-color: rgba(240, 180, 41, 0.35);
-    background: rgba(240, 180, 41, 0.04);
-}
-.match-card.ns-card:hover, .match-card.ns-card.selected {
-    border-color: var(--accent);
-    background: var(--card2);
-}
+/* NS (akan datang) — hanya jam yang gold, border normal */
 .match-card.ns-card .card-time {
     color: var(--accent);
     font-weight: 700;
