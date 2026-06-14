@@ -365,6 +365,32 @@ html, body {
     color: #000;
 }
 
+/* Alternative TV channel buttons (sedikit beda warna) */
+.alt-btn {
+    background: rgba(0, 122, 255, 0.08);
+    border-color: rgba(0, 122, 255, 0.2);
+    color: var(--muted2);
+    font-weight: 600;
+}
+.alt-btn:hover, .alt-btn.active {
+    background: var(--ios-blue, #007aff);
+    border-color: var(--ios-blue, #007aff);
+    color: #fff;
+}
+
+/* Divider antara primary & alt channels */
+.alt-divider {
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 1px;
+    padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
 .divider-v {
     width: 1px;
     height: 24px;

@@ -294,14 +294,29 @@ function resolveStreams(match) {
 
 function buildStreamButtons(match) {
   const streams = resolveStreams(match);
-  if (streams.length === 0) {
+  let html = '';
+
+  // ── Primary streams (dari auto-fetch API) ────────────────────────────
+  if (streams.length > 0) {
+    streams.forEach((s, i) => {
+      html += `<button class="src-btn primary-btn" data-idx="${i}" onclick="playStream('${escUrl(s.url)}', ${i})">${s.label || 'Stream ' + (i+1)}</button>`;
+    });
+  }
+
+  // ── Alternative TV channels (IPTV) ───────────────────────────────────
+  if (ALT_CHANNELS.length > 0) {
+    const altStartIdx = streams.length; // offset index biar playStream() pake index bener
+    html += `<span class="alt-divider">── TV ──</span>`;
+    ALT_CHANNELS.forEach((ch, i) => {
+      const idx = altStartIdx + i;
+      html += `<button class="src-btn alt-btn" data-idx="${idx}" onclick="playStream('${escUrl(ch.url)}', ${idx})" title="${ch.note || ''}">${ch.label}</button>`;
+    });
+  }
+
+  if (!html) {
     streamSourcesEl.innerHTML = '<span style="font-size:.72rem;color:var(--muted)">Paste URL stream di bawah</span>';
     return;
   }
-  let html = '';
-  streams.forEach((s, i) => {
-    html += `<button class="src-btn" data-idx="${i}" onclick="playStream('${escUrl(s.url)}', ${i})">${s.label || 'Stream ' + (i+1)}</button>`;
-  });
   streamSourcesEl.innerHTML = html;
 }
 
