@@ -117,15 +117,21 @@ function isTomorrow(utcStr) {
 // ─── FILTER BY TAB ───────────────────────────────────────────────────────────
 function filteredMatches() {
   if (activeTab === 'today') {
-    const todayMatches = MATCHES.filter(m => isToday(m.utc));
-    // Include upcoming hours if today list is empty
+    let todayMatches = MATCHES.filter(m => isToday(m.utc));
     if (todayMatches.length === 0) {
-      return MATCHES.filter(m => {
+      // Include upcoming hours if today list is empty
+      todayMatches = MATCHES.filter(m => {
         const s = getComputedStatus(m);
         return s === 'NS' || s === 'LIVE';
       }).slice(0, 8);
     }
-    return todayMatches;
+    // Urutkan: LIVE di paling atas, lalu sisanya urut jam tayang
+    return todayMatches.sort((a, b) => {
+      const aLive = getComputedStatus(a) === 'LIVE' ? 0 : 1;
+      const bLive = getComputedStatus(b) === 'LIVE' ? 0 : 1;
+      if (aLive !== bLive) return aLive - bLive;
+      return new Date(a.utc) - new Date(b.utc);
+    });
   }
   if (activeTab === 'schedule') {
     const now = Date.now();
