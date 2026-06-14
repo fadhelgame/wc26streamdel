@@ -239,12 +239,6 @@ function buildCard(match) {
     scoreHtml = `<div class="card-score vs">VS</div>`;
   }
 
-  const resolvedStreams = resolveStreams(match);
-  const streamCount = resolvedStreams.length;
-  const streamHint = streamCount > 0
-    ? `<div class="stream-hint"><span class="s-dot"></span>${streamCount} stream tersedia</div>`
-    : '';
-
   const statusCls = isLive ? 'live-card' : isFT ? 'ft-card' : 'ns-card';
   const cardCls = `match-card ${statusCls}`;
 
@@ -265,7 +259,6 @@ function buildCard(match) {
           <span class="card-flag">${FLAGS[match.away] || '🏳️'}</span>
         </div>
       </div>
-      ${streamHint}
     </div>`;
 }
 
@@ -378,6 +371,9 @@ function updateInfoBar(match) {
   const scoreEl  = document.getElementById('score-num');
   const statusEl = document.getElementById('score-status');
 
+  const d = new Date(match.utc);
+  const dateStr = d.toLocaleString('id-ID', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+
   if (status === 'FT' && match.homeScore !== null) {
     scoreEl.textContent = `${match.homeScore} – ${match.awayScore}`;
     statusEl.textContent = 'Full Time';
@@ -389,14 +385,14 @@ function updateInfoBar(match) {
     statusEl.textContent = '● LIVE';
     statusEl.className = 'score-status live-status';
   } else {
-    const d = new Date(match.utc);
     scoreEl.textContent = 'VS';
-    statusEl.textContent = d.toLocaleString('id-ID', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    statusEl.textContent = 'Kick-off';
     statusEl.className = 'score-status';
   }
 
+  const meta = [`Grup ${match.group}`, match.venue, dateStr].filter(Boolean);
   document.getElementById('match-meta').innerHTML =
-    `<span>Grup ${match.group}</span><span>•</span><span>${match.venue || ''}</span>`;
+    meta.map(t => `<span>${t}</span>`).join('<span class="meta-sep">•</span>');
 
   // Blue gradient on info bar when match is live
   if (status === 'LIVE') {
