@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Cup 2026 — Live Stream</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <span class="logo-ball">⚽</span>
+            <div class="logo-text">
+                <div class="logo-title">World Cup 2026</div>
+                <div class="logo-sub">LIVE STREAM</div>
+            </div>
+            <span class="live-dot" title="Live"></span>
+        </div>
+        <div class="header-right">
+            <div id="clock" class="clock"></div>
+            <span class="trophy">🏆</span>
+        </div>
+    </header>
+
+    <div class="layout">
+        <!-- Sidebar: Match List -->
+        <aside class="sidebar">
+            <div class="sidebar-tabs">
+                <button class="tab active" data-tab="today">Hari Ini</button>
+                <button class="tab" data-tab="schedule">Jadwal</button>
+                <button class="tab" data-tab="results">Hasil</button>
+            </div>
+            <div id="match-list" class="match-list"></div>
+        </aside>
+
+        <!-- Player + Info -->
+        <main class="player-section">
+            <div class="player-wrap" id="player-wrap">
+                <div id="player-placeholder" class="player-placeholder">
+                    <div class="ph-ball">⚽</div>
+                    <h2>World Cup 2026</h2>
+                    <p>Pilih pertandingan di samping untuk menonton</p>
+                </div>
+                <video id="video-player" controls playsinline preload="none"></video>
+                <iframe id="iframe-player" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe>
+            </div>
+
+            <!-- Stream source buttons + custom URL -->
+            <div id="stream-bar" class="stream-bar" style="display:none;">
+                <!-- Match code override (untuk update saat match live) -->
+                <div class="code-wrap">
+                    <span class="code-label">Code</span>
+                    <input id="code-input" type="text" class="code-input" placeholder="X_VS_Y" title="Match code dari reference site (cek saat match live)" />
+                    <button class="code-btn" onclick="applyMatchCode()">↺</button>
+                </div>
+                <div class="divider-v"></div>
+                <!-- Stream quality buttons -->
+                <div class="stream-sources" id="stream-sources"></div>
+                <div class="divider-v"></div>
+                <!-- Manual URL override -->
+                <div class="custom-url-wrap">
+                    <input id="url-input" type="text" class="url-input" placeholder="Atau paste URL langsung (m3u8 / iframe)…" />
+                    <button class="url-btn" onclick="loadCustomUrl()">▶</button>
+                </div>
+            </div>
+
+            <!-- Match info bar -->
+            <div id="match-info" class="match-info" style="display:none;">
+                <div class="score-row">
+                    <div class="team-block home-block">
+                        <span class="team-flag" id="home-flag"></span>
+                        <span class="team-name" id="home-name"></span>
+                    </div>
+                    <div class="score-block">
+                        <div class="score-num" id="score-num">VS</div>
+                        <div class="score-status" id="score-status"></div>
+                    </div>
+                    <div class="team-block away-block">
+                        <span class="team-name" id="away-name"></span>
+                        <span class="team-flag" id="away-flag"></span>
+                    </div>
+                </div>
+                <div class="match-meta" id="match-meta"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="js/matches.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
