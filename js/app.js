@@ -277,6 +277,14 @@ function selectMatch(id) {
   currentMatch = match;
   currentStreamIndex = -1;
 
+  // Hentikan stream sebelumnya
+  if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+  video.style.display = 'none';
+  video.src = '';
+  iframe.style.display = 'none';
+  iframe.src = '';
+  showPlaceholder();
+
   // Update sidebar highlight
   document.querySelectorAll('.match-card').forEach(c => c.classList.remove('selected'));
   const card = document.querySelector(`[data-id="${id}"]`);
@@ -290,7 +298,7 @@ function selectMatch(id) {
   // Fill code input with current matchCode
   document.getElementById('code-input').value = match.matchCode || '';
 
-  // Build stream source buttons (auto-play otomatis ada di dalamnya)
+  // Build stream source buttons (isi dropdown, ga auto-play)
   buildStreamButtons(match);
 }
 
@@ -336,11 +344,6 @@ function buildStreamButtons(match) {
     hasOptions = true;
   }
 
-  // ── Auto-play first primary stream ────────────────────────────────────
-  if (hasOptions && streams.length > 0) {
-    streamSelect.value = 'p:0';
-    onStreamSelect(streamSelect);
-  }
 }
 
 function onStreamSelect(sel) {

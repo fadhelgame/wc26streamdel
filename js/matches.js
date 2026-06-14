@@ -229,6 +229,7 @@ const MATCHES = [
     utc:'2026-06-14T17:00:00Z',
     venue:'NRG Stadium, Houston',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -237,6 +238,7 @@ const MATCHES = [
     utc:'2026-06-14T20:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -245,6 +247,7 @@ const MATCHES = [
     utc:'2026-06-14T23:00:00Z',
     venue:'Lincoln Financial Field, Philadelphia',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -253,6 +256,7 @@ const MATCHES = [
     utc:'2026-06-15T02:00:00Z',
     venue:'Estadio Jalisco, Guadalajara',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -263,6 +267,7 @@ const MATCHES = [
     utc:'2026-06-15T17:00:00Z',
     venue:'Mercedes-Benz Stadium, Atlanta',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -271,6 +276,7 @@ const MATCHES = [
     utc:'2026-06-15T20:00:00Z',
     venue:'Lumen Field, Seattle',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -279,6 +285,7 @@ const MATCHES = [
     utc:'2026-06-15T22:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -287,6 +294,7 @@ const MATCHES = [
     utc:'2026-06-16T02:00:00Z',
     venue:'SoFi Stadium, Inglewood',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -297,6 +305,7 @@ const MATCHES = [
     utc:'2026-06-16T19:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -305,6 +314,7 @@ const MATCHES = [
     utc:'2026-06-16T22:00:00Z',
     venue:'Gillette Stadium, Foxborough',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -313,6 +323,7 @@ const MATCHES = [
     utc:'2026-06-17T01:00:00Z',
     venue:'Arrowhead Stadium, Kansas City',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -321,6 +332,7 @@ const MATCHES = [
     utc:'2026-06-17T04:00:00Z',
     venue:"Levi's Stadium, Santa Clara",
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -331,6 +343,7 @@ const MATCHES = [
     utc:'2026-06-17T17:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -339,6 +352,7 @@ const MATCHES = [
     utc:'2026-06-17T20:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -347,6 +361,7 @@ const MATCHES = [
     utc:'2026-06-17T23:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -355,6 +370,7 @@ const MATCHES = [
     utc:'2026-06-18T02:00:00Z',
     venue:'SoFi Stadium, Inglewood',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -369,6 +385,7 @@ const MATCHES = [
     utc:'2026-06-18T17:00:00Z',
     venue:'Estadio Azteca, Mexico City',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -377,6 +394,7 @@ const MATCHES = [
     utc:'2026-06-18T20:00:00Z',
     venue:'Estadio Akron, Zapopan',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -387,6 +405,7 @@ const MATCHES = [
     utc:'2026-06-19T17:00:00Z',
     venue:'BMO Field, Toronto',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -395,6 +414,7 @@ const MATCHES = [
     utc:'2026-06-19T20:00:00Z',
     venue:"Levi's Stadium, Santa Clara",
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -403,6 +423,7 @@ const MATCHES = [
     utc:'2026-06-19T23:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -411,6 +432,7 @@ const MATCHES = [
     utc:'2026-06-20T02:00:00Z',
     venue:'Gillette Stadium, Foxborough',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -421,6 +443,7 @@ const MATCHES = [
     utc:'2026-06-20T17:00:00Z',
     venue:'SoFi Stadium, Inglewood',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -429,6 +452,7 @@ const MATCHES = [
     utc:'2026-06-20T20:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -437,6 +461,7 @@ const MATCHES = [
     utc:'2026-06-20T23:00:00Z',
     venue:'NRG Stadium, Houston',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -445,6 +470,7 @@ const MATCHES = [
     utc:'2026-06-21T02:00:00Z',
     venue:'Lincoln Financial Field, Philadelphia',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -455,6 +481,7 @@ const MATCHES = [
     utc:'2026-06-21T17:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -463,6 +490,7 @@ const MATCHES = [
     utc:'2026-06-21T20:00:00Z',
     venue:'Estadio Jalisco, Guadalajara',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -471,6 +499,7 @@ const MATCHES = [
     utc:'2026-06-21T23:00:00Z',
     venue:'Lumen Field, Seattle',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -479,6 +508,7 @@ const MATCHES = [
     utc:'2026-06-22T02:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -489,6 +519,7 @@ const MATCHES = [
     utc:'2026-06-22T17:00:00Z',
     venue:'Mercedes-Benz Stadium, Atlanta',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -497,6 +528,7 @@ const MATCHES = [
     utc:'2026-06-22T20:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -505,6 +537,7 @@ const MATCHES = [
     utc:'2026-06-22T23:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -513,6 +546,7 @@ const MATCHES = [
     utc:'2026-06-23T02:00:00Z',
     venue:'Gillette Stadium, Foxborough',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -523,6 +557,7 @@ const MATCHES = [
     utc:'2026-06-23T17:00:00Z',
     venue:'Arrowhead Stadium, Kansas City',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -531,6 +566,7 @@ const MATCHES = [
     utc:'2026-06-23T20:00:00Z',
     venue:"Levi's Stadium, Santa Clara",
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -539,6 +575,7 @@ const MATCHES = [
     utc:'2026-06-23T23:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -547,6 +584,7 @@ const MATCHES = [
     utc:'2026-06-24T02:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -557,6 +595,7 @@ const MATCHES = [
     utc:'2026-06-24T17:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -565,6 +604,7 @@ const MATCHES = [
     utc:'2026-06-24T20:00:00Z',
     venue:'SoFi Stadium, Inglewood',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -579,6 +619,7 @@ const MATCHES = [
     utc:'2026-06-25T21:00:00Z',
     venue:'Estadio Azteca, Mexico City',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -587,6 +628,7 @@ const MATCHES = [
     utc:'2026-06-25T21:00:00Z',
     venue:'Estadio Akron, Zapopan',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -595,6 +637,7 @@ const MATCHES = [
     utc:'2026-06-26T01:00:00Z',
     venue:'BMO Field, Toronto',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -603,6 +646,7 @@ const MATCHES = [
     utc:'2026-06-26T01:00:00Z',
     venue:"Levi's Stadium, Santa Clara",
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -613,6 +657,7 @@ const MATCHES = [
     utc:'2026-06-25T17:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -621,6 +666,7 @@ const MATCHES = [
     utc:'2026-06-25T17:00:00Z',
     venue:'Gillette Stadium, Foxborough',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -629,6 +675,7 @@ const MATCHES = [
     utc:'2026-06-26T21:00:00Z',
     venue:'SoFi Stadium, Inglewood',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -637,6 +684,7 @@ const MATCHES = [
     utc:'2026-06-26T21:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 
@@ -647,6 +695,7 @@ const MATCHES = [
     utc:'2026-06-27T01:00:00Z',
     venue:'NRG Stadium, Houston',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -655,6 +704,7 @@ const MATCHES = [
     utc:'2026-06-27T01:00:00Z',
     venue:'Lincoln Financial Field, Philadelphia',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -663,6 +713,7 @@ const MATCHES = [
     utc:'2026-06-27T17:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -671,6 +722,7 @@ const MATCHES = [
     utc:'2026-06-27T17:00:00Z',
     venue:'Estadio Jalisco, Guadalajara',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -679,6 +731,7 @@ const MATCHES = [
     utc:'2026-06-27T21:00:00Z',
     venue:'Lumen Field, Seattle',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -687,6 +740,7 @@ const MATCHES = [
     utc:'2026-06-27T21:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -695,6 +749,7 @@ const MATCHES = [
     utc:'2026-06-28T01:00:00Z',
     venue:'Mercedes-Benz Stadium, Atlanta',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -703,6 +758,7 @@ const MATCHES = [
     utc:'2026-06-28T01:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -711,6 +767,7 @@ const MATCHES = [
     utc:'2026-06-28T17:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -719,6 +776,7 @@ const MATCHES = [
     utc:'2026-06-28T17:00:00Z',
     venue:'Gillette Stadium, Foxborough',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -727,6 +785,7 @@ const MATCHES = [
     utc:'2026-06-28T21:00:00Z',
     venue:'Arrowhead Stadium, Kansas City',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -735,6 +794,7 @@ const MATCHES = [
     utc:'2026-06-28T21:00:00Z',
     venue:"Levi's Stadium, Santa Clara",
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -743,6 +803,7 @@ const MATCHES = [
     utc:'2026-06-29T01:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -751,6 +812,7 @@ const MATCHES = [
     utc:'2026-06-29T01:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -759,6 +821,7 @@ const MATCHES = [
     utc:'2026-06-29T17:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
   {
@@ -767,6 +830,7 @@ const MATCHES = [
     utc:'2026-06-29T17:00:00Z',
     venue:'SoFi Stadium, Inglewood',
     homeScore:null, awayScore:null, status:'NS',
+    matchCode:'A_VS_T',
     streams:[]
   },
 ];
