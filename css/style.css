@@ -344,51 +344,47 @@ html, body {
 }
 .code-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
 
-.stream-sources { display: flex; gap: 5px; flex-shrink: 0; }
+/* ─── STREAM SELECT DROPDOWN ──────────────────────────────── */
+.stream-select-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+}
 
-.src-btn {
-    padding: 4px 13px;
-    background: var(--card);
+#stream-select {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--muted2);
+    border-radius: var(--r);
+    padding: 5px 10px;
+    color: var(--text);
+    font-size: 0.75rem;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    appearance: auto;
+}
+
+#stream-select:focus {
+    border-color: var(--accent);
+}
+
+#stream-select optgroup {
     font-size: 0.7rem;
     font-weight: 700;
-    cursor: pointer;
-    transition: 0.15s;
-    white-space: nowrap;
-    font-family: inherit;
-}
-.src-btn:hover, .src-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #000;
+    color: var(--accent);
+    font-style: normal;
+    padding: 4px 0;
 }
 
-/* Alternative TV channel buttons (sedikit beda warna) */
-.alt-btn {
-    background: rgba(0, 122, 255, 0.08);
-    border-color: rgba(0, 122, 255, 0.2);
-    color: var(--muted2);
-    font-weight: 600;
-}
-.alt-btn:hover, .alt-btn.active {
-    background: var(--ios-blue, #007aff);
-    border-color: var(--ios-blue, #007aff);
-    color: #fff;
-}
-
-/* Divider antara primary & alt channels */
-.alt-divider {
-    font-size: 0.55rem;
-    font-weight: 800;
-    color: var(--muted);
-    letter-spacing: 1px;
-    padding: 0 4px;
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-    flex-shrink: 0;
+#stream-select option {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--surface);
+    padding: 4px 8px;
 }
 
 .divider-v {
@@ -519,9 +515,9 @@ html, body {
 
     /* Code input + custom url full width */
     .code-wrap { flex-shrink: 0; }
+    .stream-select-wrap { width: 100%; flex: none; }
     .custom-url-wrap { width: 100%; flex: none; }
     .url-input { width: 100%; }
-    .stream-sources { flex-wrap: wrap; }
 
     /* Match info compact */
     .match-info {

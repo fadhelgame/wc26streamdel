@@ -55,8 +55,12 @@
                     <button class="code-btn" onclick="applyMatchCode()">↺</button>
                 </div>
                 <div class="divider-v"></div>
-                <!-- Stream quality buttons -->
-                <div class="stream-sources" id="stream-sources"></div>
+                <!-- Dropdown stream selector (ganti tombol2 panjang) -->
+                <div class="stream-select-wrap">
+                  <select id="stream-select" onchange="onStreamSelect(this)">
+                    <option value="">— Pilih Stream —</option>
+                  </select>
+                </div>
                 <div class="divider-v"></div>
                 <!-- Manual URL override -->
                 <div class="custom-url-wrap">

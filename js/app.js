@@ -9,7 +9,7 @@ const iframe    = document.getElementById('iframe-player');
 const placeholder = document.getElementById('player-placeholder');
 const matchInfoEl = document.getElementById('match-info');
 const streamBar = document.getElementById('stream-bar');
-const streamSourcesEl = document.getElementById('stream-sources');
+const streamSelect = document.getElementById('stream-select');
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 function init() {
@@ -273,16 +273,8 @@ function selectMatch(id) {
   // Fill code input with current matchCode
   document.getElementById('code-input').value = match.matchCode || '';
 
-  // Build stream source buttons
+  // Build stream source buttons (auto-play otomatis ada di dalamnya)
   buildStreamButtons(match);
-
-  // Auto-play first stream if available
-  const streams = resolveStreams(match);
-  if (streams.length > 0) {
-    playStream(streams[0].url, 0);
-  } else {
-    showPlaceholder();
-  }
 }
 
 // Resolve streams: prefer manual streams[], fallback to genStreams(matchCode)
@@ -292,32 +284,64 @@ function resolveStreams(match) {
   return [];
 }
 
+// Build dropdown stream selector
 function buildStreamButtons(match) {
   const streams = resolveStreams(match);
-  let html = '';
+  streamSelect.innerHTML = '<option value="">— Pilih Stream —</option>';
+
+  let hasOptions = false;
 
   // ── Primary streams (dari auto-fetch API) ────────────────────────────
   if (streams.length > 0) {
+    const g = document.createElement('optgroup');
+    g.label = 'STREAM UTAMA';
     streams.forEach((s, i) => {
-      html += `<button class="src-btn primary-btn" data-idx="${i}" onclick="playStream('${escUrl(s.url)}', ${i})">${s.label || 'Stream ' + (i+1)}</button>`;
+      const o = document.createElement('option');
+      o.value = 'p:' + i;
+      o.textContent = s.label;
+      g.appendChild(o);
     });
+    streamSelect.appendChild(g);
+    hasOptions = true;
   }
 
   // ── Alternative TV channels (IPTV) ───────────────────────────────────
   if (ALT_CHANNELS.length > 0) {
-    const altStartIdx = streams.length; // offset index biar playStream() pake index bener
-    html += `<span class="alt-divider">── TV ──</span>`;
+    const g = document.createElement('optgroup');
+    g.label = 'TV ALTERNATIF';
     ALT_CHANNELS.forEach((ch, i) => {
-      const idx = altStartIdx + i;
-      html += `<button class="src-btn alt-btn" data-idx="${idx}" onclick="playStream('${escUrl(ch.url)}', ${idx})" title="${ch.note || ''}">${ch.label}</button>`;
+      const o = document.createElement('option');
+      o.value = 'a:' + i;
+      o.textContent = ch.label + (ch.note ? ' — ' + ch.note : '');
+      g.appendChild(o);
     });
+    streamSelect.appendChild(g);
+    hasOptions = true;
   }
 
-  if (!html) {
-    streamSourcesEl.innerHTML = '<span style="font-size:.72rem;color:var(--muted)">Paste URL stream di bawah</span>';
-    return;
+  // ── Auto-play first primary stream ────────────────────────────────────
+  if (hasOptions && streams.length > 0) {
+    streamSelect.value = 'p:0';
+    onStreamSelect(streamSelect);
   }
-  streamSourcesEl.innerHTML = html;
+}
+
+function onStreamSelect(sel) {
+  const val = sel.value;
+  if (!val) return;
+
+  const [type, idxStr] = val.split(':');
+  const idx = parseInt(idxStr);
+
+  let url = '';
+  if (type === 'p') {
+    const streams = resolveStreams(currentMatch);
+    url = streams[idx]?.url;
+  } else if (type === 'a') {
+    url = ALT_CHANNELS[idx]?.url;
+  }
+
+  if (url) playStream(url);
 }
 
 function escUrl(url) {
@@ -356,14 +380,7 @@ function updateInfoBar(match) {
 }
 
 // ─── PLAY STREAM ─────────────────────────────────────────────────────────────
-function playStream(url, idx) {
-  currentStreamIndex = idx;
-
-  // Update button states
-  document.querySelectorAll('.src-btn').forEach((b, i) => {
-    b.classList.toggle('active', i === idx);
-  });
-
+function playStream(url) {
   if (!url || url.trim() === '') return;
   url = url.trim();
 
@@ -452,8 +469,6 @@ function applyMatchCode() {
     currentMatch.matchCode = code;
     currentMatch.streams = []; // reset manual streams so genStreams takes over
     buildStreamButtons(currentMatch);
-    const streams = resolveStreams(currentMatch);
-    if (streams.length > 0) playStream(streams[0].url, 0);
   }
 }
 
@@ -473,10 +488,18 @@ function loadCustomUrl() {
     existing.push({ label: 'Custom ' + (existing.length + 1), url });
     currentMatch.streams = existing;
     buildStreamButtons(currentMatch);
-    playStream(url, newIdx);
+    // Select custom stream in dropdown
+    const opts = streamSelect.options;
+    for (let i = 0; i < opts.length; i++) {
+      if (opts[i].textContent.startsWith('Custom')) {
+        streamSelect.value = opts[i].value;
+        break;
+      }
+    }
+    onStreamSelect(streamSelect);
   } else {
     // No match selected: just play the URL
-    playStream(url, 0);
+    playStream(url);
     streamBar.style.display = 'flex';
     matchInfoEl.style.display = 'none';
   }
