@@ -15,6 +15,11 @@ const streamSourcesEl = document.getElementById('stream-sources');
 function init() {
   updateClock();
   setInterval(updateClock, 1000);
+
+  // Auto-fetch stream URL dari reference site (gantikan match code tebakan!)
+  fetchLiveStreams();
+  setInterval(fetchLiveStreams, 30000);
+
   setInterval(refreshStatuses, 30000);
 
   document.querySelectorAll('.tab').forEach(btn => {

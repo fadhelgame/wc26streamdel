@@ -1,8 +1,8 @@
-// ─── STREAM GENERATOR ────────────────────────────────────────────────────────
-// URL format: https://{domain}/{MATCH_CODE}_{quality}_english_{num}/index.m3u8
-// Match code dari reference site: buka DevTools → lihat path m3u8
-// Contoh konfirmasi: Australia vs Türkiye = 'A_VS_T'
+// ─── PROXY URL ────────────────────────────────────────────────────────────────
+const PROXY_API = '/.netlify/functions/proxy';  // Netlify Function proxy
 
+// ─── STREAM GENERATOR (FALLBACK — manual match code) ─────────────────────────
+// Dipake kalo auto-fetch gagal atau user pake kode manual
 const STREAM_SERVERS = [
   { label:'4K-ASIA ⭐',  domain:'chingu.scorelive.xyz', q:'medium', n:7 },
   { label:'HD-ASIA',     domain:'chingu.scorelive.xyz', q:'hd',     n:7 },
@@ -23,9 +23,67 @@ function genStreams(code) {
   }));
 }
 
-// ─── MATCH CODES (dari scorelive.xyz) ────────────────────────────────────────
-// Isi field matchCode setiap pertandingan sesuai yg terlihat di DevTools / reference site
-// Pattern: INISIAL_HOME_VS_INISIAL_AWAY (contoh: Australia=A, Türkiye=T → 'A_VS_T')
+// ─── AUTO-FETCH DARI LIVE API (gantikan match code tebakan!) ────────────────
+// Fungsi ini dipanggil otomatis tiap 30 detik. Cocokin match di MATCHES
+// dgn data dari API reference site → inject URL stream asli.
+async function fetchLiveStreams() {
+  try {
+    const res = await fetch(PROXY_API + '?type=live');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.data || !data.data.streams) return;
+
+    let updated = false;
+
+    data.data.streams.forEach(upstream => {
+      // Cari match yg cocok di MATCHES (by title)
+      const title = upstream.title_short.replace(/\u00A0/g, ' '); // &nbsp; → spasi
+      const match = MATCHES.find(m => {
+        const ourTitle = m.home + ' vs ' + m.away;
+        // Fuzzy match: case-insensitive, ignore aksen
+        return ourTitle.localeCompare(title, undefined, { sensitivity: 'base' }) === 0;
+      });
+
+      if (!match) return;
+
+      // Build stream array dari channel upstream
+      const streams = upstream.channel.map(ch => ({
+        label: ch.quality + (ch.is_premium ? ' ⭐' : ''),
+        url:   ch.url,
+        server: ch.server,
+        premium: ch.is_premium,
+      }));
+
+      // Cek kalo stream udah beda (update) atau kosong
+      const currentJson = JSON.stringify(match.streams || []);
+      const newJson = JSON.stringify(streams);
+      if (currentJson !== newJson) {
+        match.streams = streams;
+        match.matchCode = null; // nonaktifkan genStreams
+        updated = true;
+      }
+    });
+
+    // Refresh UI kalo ada perubahan
+    if (updated) {
+      renderList();
+      // Kalo match yg lg dipilih ke-update, refresh tombol stream & auto-play
+      if (window.currentMatch) {
+        const fresh = MATCHES.find(m => m.id === window.currentMatch.id);
+        if (fresh && window.selectMatch) {
+          window.selectMatch(fresh.id);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Auto-fetch stream API gagal:', e);
+    // No problem — fallback ke genStreams/matchCode atau manual
+  }
+}
+
+// ─── MATCH CODES (OPSIONAL — fallback manual) ──────────────────────────────
+// Auto-fetch di atas LEBIH DIUTAMAKAN. MatchCode cuma fallback kalo API mati.
+// Isi manual cuma kalo emang pengen, ga wajib.
 
 // ─── FLAGS ───────────────────────────────────────────────────────────────────
 const FLAGS = {
@@ -154,7 +212,6 @@ const MATCHES = [
     utc:'2026-06-14T17:00:00Z',
     venue:'NRG Stadium, Houston',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'G_VS_C',   // ⚠️ perkiraan — cek reference site
     streams:[]
   },
   {
@@ -163,7 +220,6 @@ const MATCHES = [
     utc:'2026-06-14T20:00:00Z',
     venue:'AT&T Stadium, Arlington',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'N_VS_J',   // ⚠️ perkiraan
     streams:[]
   },
   {
@@ -172,7 +228,6 @@ const MATCHES = [
     utc:'2026-06-14T23:00:00Z',
     venue:'Lincoln Financial Field, Philadelphia',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'I_VS_E',   // ⚠️ perkiraan
     streams:[]
   },
   {
@@ -181,7 +236,6 @@ const MATCHES = [
     utc:'2026-06-15T02:00:00Z',
     venue:'Estadio Jalisco, Guadalajara',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'S_VS_T',   // ⚠️ perkiraan
     streams:[]
   },
 
@@ -192,7 +246,6 @@ const MATCHES = [
     utc:'2026-06-15T17:00:00Z',
     venue:'Mercedes-Benz Stadium, Atlanta',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'SP_VS_CV', // ⚠️ perkiraan
     streams:[]
   },
   {
@@ -201,7 +254,6 @@ const MATCHES = [
     utc:'2026-06-15T20:00:00Z',
     venue:'Lumen Field, Seattle',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'B_VS_EG',  // ⚠️ perkiraan
     streams:[]
   },
   {
@@ -210,7 +262,6 @@ const MATCHES = [
     utc:'2026-06-15T22:00:00Z',
     venue:'Hard Rock Stadium, Miami Gardens',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'SA_VS_U',  // ⚠️ perkiraan (SA=Saudi Arabia, U=Uruguay)
     streams:[]
   },
   {
@@ -219,7 +270,6 @@ const MATCHES = [
     utc:'2026-06-16T02:00:00Z',
     venue:'SoFi Stadium, Inglewood',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'IR_VS_NZ', // ⚠️ perkiraan
     streams:[]
   },
 
@@ -230,7 +280,6 @@ const MATCHES = [
     utc:'2026-06-16T19:00:00Z',
     venue:'MetLife Stadium, East Rutherford',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'F_VS_SE',  // ⚠️ perkiraan
     streams:[]
   },
   {
@@ -239,7 +288,6 @@ const MATCHES = [
     utc:'2026-06-16T22:00:00Z',
     venue:'Gillette Stadium, Foxborough',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'IQ_VS_NO', // ⚠️ perkiraan
     streams:[]
   },
   {
@@ -248,7 +296,6 @@ const MATCHES = [
     utc:'2026-06-17T01:00:00Z',
     venue:'Arrowhead Stadium, Kansas City',
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'AR_VS_AL', // ⚠️ perkiraan
     streams:[]
   },
   {
@@ -257,7 +304,6 @@ const MATCHES = [
     utc:'2026-06-17T04:00:00Z',
     venue:"Levi's Stadium, Santa Clara",
     homeScore:null, awayScore:null, status:'NS',
-    matchCode:'AU_VS_JO', // ⚠️ perkiraan
     streams:[]
   },
 

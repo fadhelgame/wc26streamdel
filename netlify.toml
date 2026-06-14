@@ -1,0 +1,16 @@
+# Konfigurasi Netlify — World Cup 2026 Live Stream
+# Build: static site (HTML+JS+CSS), ga perlu framework
+
+[build]
+  publish = "."                         # root folder = semua file static
+  functions = "netlify/functions"       # folder Netlify Functions
+
+[build.processing]
+  skip_processing = false
+
+# Redirect: pastiin SPA ga broken (kalo pake client-side routing)
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
