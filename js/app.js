@@ -390,6 +390,13 @@ function updateInfoBar(match) {
 
   document.getElementById('match-meta').innerHTML =
     `<span>Grup ${match.group}</span><span>•</span><span>${match.venue || ''}</span>`;
+
+  // Blue gradient on info bar when match is live
+  if (status === 'LIVE') {
+    matchInfoEl.classList.add('info-live');
+  } else {
+    matchInfoEl.classList.remove('info-live');
+  }
 }
 
 // ─── PLAY STREAM ─────────────────────────────────────────────────────────────
