@@ -100,6 +100,8 @@ async function fetchLiveStreams() {
 const ALT_CHANNELS = [
   { label:'Arena Premium 1', url:'https://nl1.nghk.ai/ArenaPremium1HD/index.m3u8',
     note:'Balkan — HD' },
+  { label:'CazéTV (YT)', url:'https://www.youtube.com/embed/8rr-857IbHA?autoplay=1',
+    note:'Brazil official — 🇧🇷 geo-block, perlu VPN Brazil' },
 ];
 
 // ─── FLAGS ───────────────────────────────────────────────────────────────────
