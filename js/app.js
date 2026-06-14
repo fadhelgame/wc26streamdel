@@ -115,9 +115,19 @@ function renderList() {
   }
 
   let html = '';
-  let lastDay = null;
 
-  matches.forEach(match => {
+  // ── LIVE section: always pinned at top ──────────────────────────────────
+  const liveMatches = matches.filter(m => getComputedStatus(m) === 'LIVE');
+  const otherMatches = matches.filter(m => getComputedStatus(m) !== 'LIVE');
+
+  if (liveMatches.length > 0) {
+    html += `<div class="live-section-label"><span class="live-pulse"></span>Sedang Live</div>`;
+    liveMatches.forEach(m => { html += buildCard(m); });
+  }
+
+  // ── Remaining matches grouped by day ────────────────────────────────────
+  let lastDay = null;
+  otherMatches.forEach(match => {
     const d = new Date(match.utc);
     const dayKey = d.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long' });
 
@@ -128,7 +138,6 @@ function renderList() {
       html += `<div class="day-label">${label}</div>`;
       lastDay = dayKey;
     }
-
     html += buildCard(match);
   });
 

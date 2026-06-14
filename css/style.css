@@ -144,13 +144,47 @@ html, body {
     background: var(--card2);
     box-shadow: inset 3px 0 0 var(--accent);
 }
-.match-card.live-card { border-color: var(--live); }
+.match-card.live-card {
+    border-color: var(--live);
+    border-width: 2px;
+    background: rgba(239, 68, 68, 0.07);
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.18);
+}
 .match-card.live-card::before {
-    content: '';
+    content: '● LIVE';
     position: absolute;
-    top: 0; left: 0; right: 0; height: 2px;
+    top: 0; left: 0; right: 0;
+    height: 18px;
     background: var(--live);
-    animation: blink 1.3s infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #fff;
+    padding-top: 1px;
+}
+.match-card.live-card .card-top { margin-top: 12px; }
+
+/* Live section header in sidebar */
+.live-section-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 6px 6px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--live);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+.live-pulse {
+    width: 7px; height: 7px;
+    background: var(--live);
+    border-radius: 50%;
+    animation: blink 1s infinite;
+    flex-shrink: 0;
 }
 
 .card-top {
@@ -421,14 +455,71 @@ html, body {
 /* ─── RESPONSIVE ─── */
 @media (max-width: 700px) {
     html, body { overflow: auto; height: auto; }
-    .layout { flex-direction: column; height: auto; overflow: visible; }
-    .sidebar { width: 100%; height: auto; max-height: 44vh; }
-    .player-section { height: 56vw; min-height: 250px; flex-shrink: 0; }
-    .player-wrap { height: 100%; }
-    .match-info { height: auto; padding: 10px 14px; }
-    .team-name { font-size: 0.8rem; }
-    .team-flag { font-size: 1.2rem; }
-    .score-num { font-size: 1.3rem; }
-    .stream-bar { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 8px; }
+
+    .layout {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+    }
+
+    /* Player section → TOP */
+    .player-section {
+        order: 1;
+        height: auto;
+        flex-shrink: 0;
+        overflow: visible;
+    }
+
+    /* 16:9 full-width player */
+    .player-wrap {
+        flex: none;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        min-height: 180px;
+        height: auto;
+    }
+
+    /* Stream bar: wrap kompak */
+    .stream-bar {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 8px 10px;
+        gap: 6px;
+        overflow: visible;
+    }
+
+    /* Sembunyikan divider on mobile */
     .divider-v { display: none; }
+
+    /* Code input + custom url full width */
+    .code-wrap { flex-shrink: 0; }
+    .custom-url-wrap { width: 100%; flex: none; }
+    .url-input { width: 100%; }
+    .stream-sources { flex-wrap: wrap; }
+
+    /* Match info compact */
+    .match-info {
+        height: auto;
+        padding: 10px 14px;
+    }
+    .team-name { font-size: 0.82rem; }
+    .team-flag { font-size: 1.2rem; }
+    .score-num { font-size: 1.4rem; }
+    .score-block { min-width: 70px; }
+
+    /* Sidebar → BELOW player */
+    .sidebar {
+        order: 2;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        border-right: none;
+        border-top: 1px solid var(--border);
+    }
+
+    /* Match list scroll on mobile */
+    .match-list {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
 }
