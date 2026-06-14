@@ -167,6 +167,31 @@ html, body {
 }
 .match-card.live-card .card-top { margin-top: 12px; }
 
+/* FT (sudah selesai) — sedikit redup */
+.match-card.ft-card {
+    opacity: 0.62;
+    border-color: rgba(37, 45, 64, 0.6);
+}
+.match-card.ft-card:hover, .match-card.ft-card.selected {
+    opacity: 1;
+    border-color: var(--accent);
+}
+.match-card.ft-card .card-time { color: var(--muted); }
+
+/* NS (akan datang) — border accent tipis + efek glow kecil */
+.match-card.ns-card {
+    border-color: rgba(240, 180, 41, 0.35);
+    background: rgba(240, 180, 41, 0.04);
+}
+.match-card.ns-card:hover, .match-card.ns-card.selected {
+    border-color: var(--accent);
+    background: var(--card2);
+}
+.match-card.ns-card .card-time {
+    color: var(--accent);
+    font-weight: 700;
+}
+
 /* Live section header in sidebar */
 .live-section-label {
     display: flex;

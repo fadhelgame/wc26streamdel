@@ -125,11 +125,19 @@ function filteredMatches() {
         return s === 'NS' || s === 'LIVE';
       }).slice(0, 8);
     }
-    // Urutkan: LIVE di paling atas, lalu sisanya urut jam tayang
+    // Urut: LIVE dulu → FT terbaru ke lama → NS terdekat ke jauh
     return todayMatches.sort((a, b) => {
-      const aLive = getComputedStatus(a) === 'LIVE' ? 0 : 1;
-      const bLive = getComputedStatus(b) === 'LIVE' ? 0 : 1;
-      if (aLive !== bLive) return aLive - bLive;
+      const priority = m => {
+        const s = getComputedStatus(m);
+        if (s === 'LIVE') return 0;
+        if (s === 'FT')   return 1;
+        return 2; // NS upcoming
+      };
+      const pa = priority(a), pb = priority(b);
+      if (pa !== pb) return pa - pb;
+      // FT: terbaru (UTC terbesar) di atas
+      if (pa === 1) return new Date(b.utc) - new Date(a.utc);
+      // NS: paling dekat (UTC terkecil) di atas
       return new Date(a.utc) - new Date(b.utc);
     });
   }
@@ -235,7 +243,8 @@ function buildCard(match) {
         ? `<div class="stream-hint" style="color:var(--muted)">Paste URL stream manual</div>`
         : '';
 
-  const cardCls = ['match-card', isLive ? 'live-card' : ''].join(' ').trim();
+  const statusCls = isLive ? 'live-card' : isFT ? 'ft-card' : 'ns-card';
+  const cardCls = `match-card ${statusCls}`;
 
   return `
     <div class="${cardCls}" data-id="${match.id}">
