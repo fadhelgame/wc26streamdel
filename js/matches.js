@@ -100,12 +100,6 @@ async function fetchLiveStreams() {
 const ALT_CHANNELS = [
   { label:'Arena Premium 1', url:'https://nl1.nghk.ai/ArenaPremium1HD/index.m3u8',
     note:'Balkan — HD' },
-  { label:'TVRI Nasional', url:'https://ott-balancer.tvri.go.id/live/eds/Nasional/hls/Nasional.m3u8',
-    note:'Indonesia — 1080i, official' },
-  { label:'TVRI Sport', url:'https://ott-balancer.tvri.go.id/live/eds/SportHD/hls/SportHD.m3u8',
-    note:'Indonesia — 720p, official' },
-  { label:'CazéTV (YT)', url:'https://www.youtube.com/embed/8rr-857IbHA?autoplay=1',
-    note:'Brazil official — 🇧🇷 geo-block, perlu VPN Brazil' },
 ];
 
 // ─── FLAGS ───────────────────────────────────────────────────────────────────
