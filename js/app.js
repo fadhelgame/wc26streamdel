@@ -4,6 +4,8 @@ let currentStreamIndex = -1;
 let hlsInstance = null;
 let activeTab = 'today';
 
+const menuScreen   = document.getElementById('menu-screen');
+const streamScreen = document.getElementById('stream-screen');
 const video     = document.getElementById('video-player');
 const iframe    = document.getElementById('iframe-player');
 const placeholder = document.getElementById('player-placeholder');
@@ -262,10 +264,35 @@ function buildCard(match) {
     </div>`;
 }
 
+// ─── SCREEN SWITCHING ──────────────────────────────────────────────────────────
+function showStream() {
+  menuScreen.style.display = 'none';
+  streamScreen.style.display = 'flex';
+  window.scrollTo(0, 0);
+}
+
+function showMenu() {
+  // Stop stream
+  if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+  video.style.display = 'none';
+  video.src = '';
+  iframe.style.display = 'none';
+  iframe.src = '';
+
+  streamScreen.style.display = 'none';
+  menuScreen.style.display = 'block';
+  currentMatch = null;
+  renderList();
+}
+window.showMenu = showMenu;
+window.showStream = showStream;
+
 // ─── SELECT MATCH ────────────────────────────────────────────────────────────
 function selectMatch(id) {
   const match = MATCHES.find(m => m.id === id);
   if (!match) return;
+
+  showStream(); // pindah ke LAYAR 2
 
   currentMatch = match;
   currentStreamIndex = -1;
