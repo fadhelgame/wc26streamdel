@@ -315,17 +315,18 @@ function selectMatch(id) {
   matchInfoEl.style.display = 'flex';
   streamBar.style.display = 'flex';
 
-  // Fill code input with current matchCode
-  document.getElementById('code-input').value = match.matchCode || '';
+  // Auto-fill code input — generate dari nama tim
+  document.getElementById('code-input').value = generateMatchCode(match.home, match.away);
 
   // Build stream source buttons (isi dropdown, ga auto-play)
   buildStreamButtons(match);
 }
 
-// Resolve streams: prefer manual streams[], fallback to genStreams(matchCode)
+// Resolve streams: prefer manual streams[], fallback to genStreams(matchCode / auto)
 function resolveStreams(match) {
   if (match.streams && match.streams.length > 0) return match.streams;
-  if (match.matchCode) return genStreams(match.matchCode);
+  const code = match.matchCode || generateMatchCode(match.home, match.away);
+  if (code) return genStreams(code);
   return [];
 }
 
