@@ -114,6 +114,31 @@ function generateMatchCode(home, away) {
 const ALT_CHANNELS = [
   { label:'Arena Premium 1', url:'https://nl1.nghk.ai/ArenaPremium1HD/index.m3u8',
     note:'Balkan — HD' },
+  // ── CazeTv 🇧🇷 — YouTube Brazil (geo-restricted, pake Invidious bypass) ──
+  { label:'CazeTv 🇧🇷', url:'', note:'YouTube Brazil — bypass geo aktif',
+    isCazeTv:true, videoId: CAZE_TV_VIDEO_ID },
+];
+
+// ─── CAZETV — YouTube Brazil (geo-restricted, butuh bypass) ──────────────────
+// CazeTv adalah channel YouTube Brazil yg live stream World Cup,
+// tapi di-geo-block khusus Brazil aja.
+//
+// Solusi: pake Invidious (YouTube frontend alternatif) — dia fetch video
+// dari server-side, jadi IP server Invidious yg dipake, bukan IP user.
+// Parameter region=BR bilang ke YouTube "saya dari Brazil".
+//
+// Ganti video ID ini kalo link live-nya berubah:
+const CAZE_TV_VIDEO_ID = 'w-ld4SjUuDI';
+
+// Daftar Invidious instance — kalo satu mati, coba yg lain (fallback otomatis)
+const INVIDIOUS_INSTANCES = [
+  { host:'invidious.snopyta.org',       label:'Snopyta' },
+  { host:'yewtu.be',                    label:'Yewtu' },
+  { host:'invidious.lidar.eu',          label:'LIDAR' },
+  { host:'inv.riverside.rocks',         label:'Riverside' },
+  { host:'invidious.tiekoetter.com',     label:'Tiekoetter' },
+  { host:'invidious.private.coffee',     label:'Private Coffee' },
+  { host:'inv.vern.cc',                 label:'Vern' },
 ];
 
 // ─── FLAGS ───────────────────────────────────────────────────────────────────
