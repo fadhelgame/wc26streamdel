@@ -107,17 +107,6 @@ function generateMatchCode(home, away) {
   return getCountryCode(home) + '_VS_' + getCountryCode(away);
 }
 
-// ─── CAZETV — YouTube Brazil (geo-restricted, butuh bypass) ──────────────────
-// CazeTv adalah channel YouTube Brazil yg live stream World Cup,
-// tapi di-geo-block khusus Brazil aja.
-//
-// Solusi: pake Invidious (YouTube frontend alternatif) — dia fetch video
-// dari server-side, jadi IP server Invidious yg dipake, bukan IP user.
-// Parameter region=BR bilang ke YouTube "saya dari Brazil".
-//
-// Ganti video ID ini kalo link live-nya berubah:
-const CAZE_TV_VIDEO_ID = 'w-ld4SjUuDI';
-
 // ─── ALTERNATIVE TV CHANNELS (IPTV) ──────────────────────────────────────────
 // Dari iptv-org.github.io — channel TV yg kemungkinan nyiarin World Cup.
 // Muncul otomatis di semua match sbg opsi cadangan kalo stream utama mati.
@@ -125,20 +114,11 @@ const CAZE_TV_VIDEO_ID = 'w-ld4SjUuDI';
 const ALT_CHANNELS = [
   { label:'Arena Premium 1', url:'https://nl1.nghk.ai/ArenaPremium1HD/index.m3u8',
     note:'Balkan — HD' },
-  // ── CazeTv 🇧🇷 — YouTube Brazil (geo-restricted, pake Invidious bypass) ──
-  { label:'CazeTv 🇧🇷', url:'', note:'YouTube Brazil — bypass geo aktif',
-    isCazeTv:true, videoId: CAZE_TV_VIDEO_ID },
-];
-
-// Daftar Invidious instance — kalo satu mati, coba yg lain (fallback otomatis)
-const INVIDIOUS_INSTANCES = [
-  { host:'invidious.snopyta.org',       label:'Snopyta' },
-  { host:'yewtu.be',                    label:'Yewtu' },
-  { host:'invidious.lidar.eu',          label:'LIDAR' },
-  { host:'inv.riverside.rocks',         label:'Riverside' },
-  { host:'invidious.tiekoetter.com',     label:'Tiekoetter' },
-  { host:'invidious.private.coffee',     label:'Private Coffee' },
-  { host:'inv.vern.cc',                 label:'Vern' },
+  // ── CazeTv 🇧🇷 — IPTV HLS langsung dari CDN (CloudFront) ──
+  // Ga perlu bypass geo karena stream IPTV ini global, bukan dari YouTube.
+  // Sumber: github.com/A70N/IPTV
+  { label:'CazeTv 🇧🇷', note:'Brazil — HLS',
+    url:'https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8' },
 ];
 
 // ─── FLAGS ───────────────────────────────────────────────────────────────────

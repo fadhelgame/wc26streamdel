@@ -379,14 +379,7 @@ function onStreamSelect(sel) {
     const streams = resolveStreams(currentMatch);
     url = streams[idx]?.url;
   } else if (type === 'a') {
-    const channel = ALT_CHANNELS[idx];
-    if (!channel) return;
-    // CazeTv — special handling via Invidious geo-bypass
-    if (channel.isCazeTv) {
-      playCazeTv(channel.videoId);
-      return;
-    }
-    url = channel.url;
+    url = ALT_CHANNELS[idx]?.url;
   }
 
   if (url) playStream(url);
@@ -437,104 +430,10 @@ function updateInfoBar(match) {
   }
 }
 
-// ─── CAZETV — YouTube Brazil via Invidious (geo-bypass) ──────────────────────
-// Pake Invidious instance biar YouTube nganggap viewer dari IP server Invidious,
-// bukan IP user. Region=BR bikin YouTube ngasih konten versi Brazil.
-// Fallback otomatis: kalo instance A gagal, coba instance B, C, dst.
-function getInvidiousEmbedUrl(videoId, instanceIndex) {
-  const idx = instanceIndex !== undefined
-    ? instanceIndex
-    : Math.floor(Math.random() * INVIDIOUS_INSTANCES.length);
-  const host = INVIDIOUS_INSTANCES[idx].host;
-  return `https://${host}/embed/${videoId}?region=BR&autoplay=1&local=true&hl=pt`;
-}
-
-function playCazeTv(videoId, attempt) {
-  if (!videoId) return;
-  attempt = attempt || 0;
-
-  // Kalo semua instance udah dicoba, kasih tau user
-  if (attempt >= INVIDIOUS_INSTANCES.length) {
-    showPlaceholder();
-    placeholder.innerHTML = `
-      <div style="font-size:2.5rem;margin-bottom:8px;">😕</div>
-      <h2>CazeTv gagal dimuat</h2>
-      <p style="font-size:.8rem;color:#666;max-width:300px;">
-        Semua Invidious instance dicoba tapi ga ada yg berhasil.
-        Mungkin live udah selesai, atau YouTube blokir instance.
-        Coba refresh halaman atau pilih stream lain.
-      </p>
-    `;
-    return;
-  }
-
-  const instance = INVIDIOUS_INSTANCES[attempt];
-  const url = `https://${instance.host}/embed/${videoId}?region=BR&autoplay=1&local=true&hl=pt`;
-
-  // Tampilkan placeholder saat loading
-  showPlaceholder();
-  placeholder.innerHTML = `
-    <div style="font-size:3rem;margin-bottom:8px;">🇧🇷</div>
-    <h2>CazeTv — Bypass Geo</h2>
-    <p style="font-size:.8rem;color:#666;">
-      Invidious: ${instance.label}
-      ${attempt > 0 ? `· Percobaan ${attempt + 1}/${INVIDIOUS_INSTANCES.length}` : ''}
-    </p>
-  `;
-
-  // Load ke iframe
-  if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-  video.style.display = 'none';
-  video.src = '';
-  placeholder.style.display = 'none';
-  iframe.style.display = 'block';
-
-  // Bersihin timer sebelumnya kalo ada
-  if (window._cazeTvTimer) { clearTimeout(window._cazeTvTimer); }
-
-  // Flag buat ngecek apakah iframe berhasil load (event 'load' fired)
-  let loaded = false;
-
-  iframe.onload = () => {
-    loaded = true;
-    // Clear fallback timer — sesuatu udah ter-load
-    if (window._cazeTvTimer) {
-      clearTimeout(window._cazeTvTimer);
-      window._cazeTvTimer = null;
-    }
-  };
-
-  // Set iframe src
-  iframe.src = url;
-
-  // Fallback: kalo 10 detik ga ada 'load' event, coba instance berikutnya
-  window._cazeTvTimer = setTimeout(() => {
-    if (!loaded) {
-      console.warn(`CazeTv: ${instance.label} no load event, trying next...`);
-      iframe.onload = null; // cleanup
-      playCazeTv(videoId, attempt + 1);
-    }
-  }, 10000);
-}
-
-// Override showMenu & showPlaceholder to cancel CazeTv timer
-const _origShowMenu = window.showMenu;
-window.showMenu = function() {
-  if (window._cazeTvTimer) { clearTimeout(window._cazeTvTimer); window._cazeTvTimer = null; }
-  _origShowMenu();
-};
-
 // ─── PLAY STREAM ─────────────────────────────────────────────────────────────
 function playStream(url) {
   if (!url || url.trim() === '') return;
   url = url.trim();
-
-  // Cleanup: cancel any pending CazeTv fallback timer
-  if (window._cazeTvTimer) {
-    clearTimeout(window._cazeTvTimer);
-    window._cazeTvTimer = null;
-  }
-  iframe.onload = null; // Reset iframe load handler
 
   // Detect stream type
   if (url.match(/\.m3u8(\?.*)?$/i)) {
