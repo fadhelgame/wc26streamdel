@@ -107,6 +107,17 @@ function generateMatchCode(home, away) {
   return getCountryCode(home) + '_VS_' + getCountryCode(away);
 }
 
+// ─── CAZETV — YouTube Brazil (geo-restricted, butuh bypass) ──────────────────
+// CazeTv adalah channel YouTube Brazil yg live stream World Cup,
+// tapi di-geo-block khusus Brazil aja.
+//
+// Solusi: pake Invidious (YouTube frontend alternatif) — dia fetch video
+// dari server-side, jadi IP server Invidious yg dipake, bukan IP user.
+// Parameter region=BR bilang ke YouTube "saya dari Brazil".
+//
+// Ganti video ID ini kalo link live-nya berubah:
+const CAZE_TV_VIDEO_ID = 'w-ld4SjUuDI';
+
 // ─── ALTERNATIVE TV CHANNELS (IPTV) ──────────────────────────────────────────
 // Dari iptv-org.github.io — channel TV yg kemungkinan nyiarin World Cup.
 // Muncul otomatis di semua match sbg opsi cadangan kalo stream utama mati.
@@ -118,17 +129,6 @@ const ALT_CHANNELS = [
   { label:'CazeTv 🇧🇷', url:'', note:'YouTube Brazil — bypass geo aktif',
     isCazeTv:true, videoId: CAZE_TV_VIDEO_ID },
 ];
-
-// ─── CAZETV — YouTube Brazil (geo-restricted, butuh bypass) ──────────────────
-// CazeTv adalah channel YouTube Brazil yg live stream World Cup,
-// tapi di-geo-block khusus Brazil aja.
-//
-// Solusi: pake Invidious (YouTube frontend alternatif) — dia fetch video
-// dari server-side, jadi IP server Invidious yg dipake, bukan IP user.
-// Parameter region=BR bilang ke YouTube "saya dari Brazil".
-//
-// Ganti video ID ini kalo link live-nya berubah:
-const CAZE_TV_VIDEO_ID = 'w-ld4SjUuDI';
 
 // Daftar Invidious instance — kalo satu mati, coba yg lain (fallback otomatis)
 const INVIDIOUS_INSTANCES = [
