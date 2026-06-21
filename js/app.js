@@ -168,44 +168,49 @@ function isTomorrow(utcStr) {
 
 // ─── FILTER BY TAB ───────────────────────────────────────────────────────────
 function filteredMatches() {
+  const now = Date.now();
+
   if (activeTab === 'today') {
+    // Ambil match hari ini (berdasarkan WIB)
     let todayMatches = MATCHES.filter(m => isToday(m.utc));
+    
     if (todayMatches.length === 0) {
-      // Include upcoming hours if today list is empty
-      todayMatches = MATCHES.filter(m => {
-        const s = getComputedStatus(m);
-        return s === 'NS' || s === 'LIVE';
-      }).slice(0, 8);
+      // Kalo ga ada match hari ini, ambil NS/LIVE terdekat (max 8)
+      todayMatches = MATCHES
+        .filter(m => { const s = getComputedStatus(m); return s === 'LIVE' || s === 'NS'; })
+        .sort((a, b) => new Date(a.utc) - new Date(b.utc))
+        .slice(0, 8);
     }
-    // Urut: LIVE dulu → FT terbaru ke lama → NS terdekat ke jauh
+
+    // Urut: LIVE dulu → NS terdekat → FT
     return todayMatches.sort((a, b) => {
-      const priority = m => {
-        const s = getComputedStatus(m);
-        if (s === 'LIVE') return 0;
-        if (s === 'FT')   return 1;
-        return 2; // NS upcoming
-      };
-      const pa = priority(a), pb = priority(b);
-      if (pa !== pb) return pa - pb;
-      // FT: terbaru (UTC terbesar) di atas
-      if (pa === 1) return new Date(b.utc) - new Date(a.utc);
-      // NS: paling dekat (UTC terkecil) di atas
-      return new Date(a.utc) - new Date(b.utc);
+      const pa = getComputedStatus(a), pb = getComputedStatus(b);
+      // LIVE paling atas
+      if (pa === 'LIVE' && pb !== 'LIVE') return -1;
+      if (pb === 'LIVE' && pa !== 'LIVE') return 1;
+      // NS: urut dari paling dekat
+      if (pa === 'NS' && pb === 'NS') return new Date(a.utc) - new Date(b.utc);
+      if (pa === 'FT' && pb === 'FT') return new Date(b.utc) - new Date(a.utc); // FT terbaru
+      // NS di atas FT
+      if (pa === 'NS') return -1;
+      return 1;
     });
   }
+
   if (activeTab === 'schedule') {
-    const now = Date.now();
-    return MATCHES.filter(m => {
-      const s = getComputedStatus(m);
-      return s === 'NS';
-    });
+    // Semua match NS, urut kronologis
+    return MATCHES
+      .filter(m => getComputedStatus(m) === 'NS')
+      .sort((a, b) => new Date(a.utc) - new Date(b.utc));
   }
+
   if (activeTab === 'results') {
-    return MATCHES.filter(m => {
-      const s = getComputedStatus(m);
-      return s === 'FT';
-    }).reverse();
+    // Semua FT, urut terbaru dulu
+    return MATCHES
+      .filter(m => getComputedStatus(m) === 'FT')
+      .sort((a, b) => new Date(b.utc) - new Date(a.utc));
   }
+
   return MATCHES;
 }
 
@@ -230,9 +235,28 @@ function renderList() {
     liveMatches.forEach(m => { html += buildCard(m); });
   }
 
+  // ── NEXT UP: match NS paling dekat (khusus tab Hari Ini) ─────────────
+  if (activeTab === 'today') {
+    const nextMatch = matches.find(m => getComputedStatus(m) === 'NS');
+    if (nextMatch) {
+      const wib = toWIB(nextMatch.utc);
+      const days = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+      const dayName = days[wib.getUTCDay()];
+      const jam = fmtWIBtime(nextMatch.utc);
+      const tgl = `${dayName}, ${wib.getUTCDate()} ${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][wib.getUTCMonth()]}`;
+      html += `<div class="live-section-label" style="color:var(--live)">🔜 Selanjutnya — ${tgl} ${jam} WIB</div>`;
+      html += buildCard(nextMatch);
+    }
+  }
+
   // ── Remaining matches grouped by day ────────────────────────────────────
   let lastDay = null;
   otherMatches.forEach(match => {
+    // Skip the next-match card (already shown above in today tab)
+    if (activeTab === 'today') {
+      const nextMatch = matches.find(m => getComputedStatus(m) === 'NS');
+      if (nextMatch && match.id === nextMatch.id) return;
+    }
     const wib = toWIB(match.utc);
     const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
     const days = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
