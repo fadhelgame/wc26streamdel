@@ -20,16 +20,16 @@
   --font-display: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
   --font-body:    'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
 
-  --space-xs: 4px;  --space-sm: 8px;  --space-md: 16px;
-  --space-lg: 24px; --space-xl: 32px; --space-2xl: 48px;
+  --space-xs: 5px;  --space-sm: 10px;  --space-md: 18px;
+  --space-lg: 28px; --space-xl: 36px; --space-2xl: 54px;
 
-  --text-xs:   0.7rem;
-  --text-sm:   0.8rem;
-  --text-base: 0.9rem;
-  --text-lg:   1.05rem;
-  --text-xl:   1.3rem;
-  --text-2xl:  1.6rem;
-  --text-3xl:  2rem;
+  --text-xs:   0.82rem;
+  --text-sm:   0.92rem;
+  --text-base: 1rem;
+  --text-lg:   1.15rem;
+  --text-xl:   1.45rem;
+  --text-2xl:  1.85rem;
+  --text-3xl:  2.4rem;
 
   --radius-sm: 6px;
   --radius-md: 10px;
