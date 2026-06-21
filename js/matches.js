@@ -119,6 +119,14 @@ const ALT_CHANNELS = [
   // Sumber: github.com/A70N/IPTV
   { label:'CazeTv 🇧🇷', note:'Brazil — HLS',
     url:'https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8' },
+  // ── RTB (Radio Televisyen Brunei) — Siaran World Cup via CloudFront ──
+  // Sumber: stream.mjr-dev.cloud/wc26/cloudfront.php proxy
+  // RTB 2 Sports (rtb2) — saluran olahraga Brunei
+  { label:'RTB 2 Sports 🇧🇳', note:'Brunei — Sports HD',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtb2&file=playlist.m3u8' },
+  // RTB Go (rtbgo) — saluran utama Brunei
+  { label:'RTB Go 🇧🇳', note:'Brunei — HD',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtbgo&file=playlist.m3u8' },
 ];
 
 // ─── FLAGS ───────────────────────────────────────────────────────────────────
@@ -182,7 +190,7 @@ const MATCHES = [
   {
     id:2, group:'A', md:1,
     home:'South Korea', away:'Czechia',
-    utc:'2026-06-11T22:00:00Z',
+    utc:'2026-06-12T02:00:00Z',
     venue:'Estadio Akron, Zapopan',
     homeScore:2, awayScore:1, status:'FT',
     streams:[]
@@ -535,7 +543,7 @@ const MATCHES = [
   {
     id:39, group:'H', md:2,
     home:'Spain', away:'Saudi Arabia',
-    utc:'2026-06-22T17:00:00Z',
+    utc:'2026-06-21T16:00:00Z',
     venue:'Mercedes-Benz Stadium, Atlanta',
     homeScore:null, awayScore:null, status:'NS',
 
@@ -553,16 +561,16 @@ const MATCHES = [
   {
     id:41, group:'I', md:2,
     home:'France', away:'Iraq',
-    utc:'2026-06-22T23:00:00Z',
-    venue:'MetLife Stadium, East Rutherford',
+    utc:'2026-06-22T21:00:00Z',
+    venue:'Lincoln Financial Field, Philadelphia',
     homeScore:null, awayScore:null, status:'NS',
 
     streams:[]
   },
   {
     id:42, group:'I', md:2,
-    home:'Senegal', away:'Norway',
-    utc:'2026-06-23T02:00:00Z',
+    home:'Norway', away:'Senegal',
+    utc:'2026-06-23T00:00:00Z',
     venue:'Gillette Stadium, Foxborough',
     homeScore:null, awayScore:null, status:'NS',
 

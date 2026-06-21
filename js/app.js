@@ -32,6 +32,7 @@ function init() {
 
   renderList();
   syncScoresFromESPN(); // fetch live ESPN scores on load
+  syncScoresFromApiSkor(); // fetch skor dari api_skor
 }
 
 // ─── POLLING ENGINE ───────────────────────────────────────────────────────────
@@ -50,8 +51,11 @@ function poll() {
   // ── Refresh status match & UI selalu jalan (local-only, no API) ──────
   refreshStatuses();
 
-  // ── ESPN score sync — cheap, CORS-open, update scores live ───────────
+  // ── ESPN score sync — cheap, CORS-open, update scores live ───────────────
   syncScoresFromESPN();
+
+  // ── API Skor sync — dari stream.mjr-dev.cloud ──────────────────────────
+  syncScoresFromApiSkor();
 
   // ── Tapi fetch ke API cuma kalo ada match yg relevan ────────────────
   if (!hasUpcomingMatches()) {
@@ -75,11 +79,47 @@ function hasUpcomingMatches() {
 }
 
 // ─── CLOCK ───────────────────────────────────────────────────────────────────
+let wibOffset = 7 * 60; // WIB = UTC+7
+
+function toWIB(utcStr) {
+  const d = new Date(utcStr);
+  // Konversi manual ke WIB (UTC+7)
+  const wib = new Date(d.getTime() + wibOffset * 60 * 1000);
+  return wib;
+}
+
+function fmtWIBdate(utcStr) {
+  const wib = toWIB(utcStr);
+  const parts = wib.toUTCString().split(' '); // "Sat, 12 Jun 2026 02:00:00 GMT"
+  // parts: [WkDay, Day, Mon, Year, Time, GMT]
+  return `${parts[2]} ${parts[1]} ${parts[3]}`;
+}
+
+function fmtWIBtime(utcStr) {
+  const wib = toWIB(utcStr);
+  const h = String(wib.getUTCHours()).padStart(2, '0');
+  const m = String(wib.getUTCMinutes()).padStart(2, '0');
+  return `${h}.${m}`;
+}
+
+function fmtWIBfull(utcStr) {
+  const wib = toWIB(utcStr);
+  const days = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const dayName = days[wib.getUTCDay()];
+  const date = wib.getUTCDate();
+  const month = months[wib.getUTCMonth()];
+  const year = wib.getUTCFullYear();
+  const h = String(wib.getUTCHours()).padStart(2, '0');
+  const m = String(wib.getUTCMinutes()).padStart(2, '0');
+  return `${dayName}, ${date} ${month} ${year} ${h}.${m} WIB`;
+}
+
 function updateClock() {
-  const now = new Date();
-  const str = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit' })
-            + '  •  '
-            + now.toLocaleDateString('id-ID', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+  const nowWIB = toWIB(new Date().toISOString());
+  const days = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const str = `${String(nowWIB.getUTCHours()).padStart(2,'0')}.${String(nowWIB.getUTCMinutes()).padStart(2,'0')}.${String(nowWIB.getUTCSeconds()).padStart(2,'0')}  •  ${days[nowWIB.getUTCDay()]}, ${nowWIB.getUTCDate()} ${months[nowWIB.getUTCMonth()]} ${nowWIB.getUTCFullYear()} WIB`;
   document.getElementById('clock').textContent = str;
 }
 
@@ -102,22 +142,21 @@ function refreshStatuses() {
   renderList();
 }
 
-// ─── TODAY DETECTION ─────────────────────────────────────────────────────────
+// ─── TODAY DETECTION (based on WIB) ─────────────────────────────────────────
 function isToday(utcStr) {
-  const d = new Date(utcStr);
-  const now = new Date();
-  return d.getFullYear() === now.getFullYear()
-      && d.getMonth()    === now.getMonth()
-      && d.getDate()     === now.getDate();
+  const wib = toWIB(utcStr);
+  const nowWIB = toWIB(new Date().toISOString());
+  return wib.getUTCFullYear() === nowWIB.getUTCFullYear()
+      && wib.getUTCMonth()    === nowWIB.getUTCMonth()
+      && wib.getUTCDate()     === nowWIB.getUTCDate();
 }
 
 function isTomorrow(utcStr) {
-  const d = new Date(utcStr);
-  const tom = new Date();
-  tom.setDate(tom.getDate() + 1);
-  return d.getFullYear() === tom.getFullYear()
-      && d.getMonth()    === tom.getMonth()
-      && d.getDate()     === tom.getDate();
+  const wib = toWIB(utcStr);
+  const tomWIB = toWIB(new Date(Date.now() + 86400000).toISOString());
+  return wib.getUTCFullYear() === tomWIB.getUTCFullYear()
+      && wib.getUTCMonth()    === tomWIB.getUTCMonth()
+      && wib.getUTCDate()     === tomWIB.getUTCDate();
 }
 
 // ─── FILTER BY TAB ───────────────────────────────────────────────────────────
@@ -187,8 +226,10 @@ function renderList() {
   // ── Remaining matches grouped by day ────────────────────────────────────
   let lastDay = null;
   otherMatches.forEach(match => {
-    const d = new Date(match.utc);
-    const dayKey = d.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long' });
+    const wib = toWIB(match.utc);
+    const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    const days = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+    const dayKey = `${days[wib.getUTCDay()]}, ${wib.getUTCDate()} ${months[wib.getUTCMonth()]}`;
 
     if (dayKey !== lastDay) {
       const today = isToday(match.utc);
@@ -222,8 +263,8 @@ function buildCard(match) {
   const isLive = status === 'LIVE';
   const isFT   = status === 'FT';
 
-  const d = new Date(match.utc);
-  const timeStr = d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+  const timeStr = fmtWIBtime(match.utc);
+  const dateStr = fmtWIBdate(match.utc);
 
   let timeLabel, timeCls;
   if (isLive)      { timeLabel = '● LIVE';  timeCls = 'live-time'; }
@@ -399,8 +440,7 @@ function updateInfoBar(match) {
   const scoreEl  = document.getElementById('score-num');
   const statusEl = document.getElementById('score-status');
 
-  const d = new Date(match.utc);
-  const dateStr = d.toLocaleString('id-ID', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+  const dateStr = fmtWIBfull(match.utc);
 
   if (status === 'FT' && match.homeScore !== null) {
     scoreEl.textContent = `${match.homeScore} – ${match.awayScore}`;
@@ -665,6 +705,77 @@ async function syncScoresFromESPN() {
   if (anyChange) {
     renderList();
     if (currentMatch) updateInfoBar(currentMatch);
+  }
+}
+
+// ─── API SKOR SYNC (dari stream.mjr-dev.cloud) ─────────────────────────────
+// Mapping nama tim Indonesian → English
+const ID_TO_EN = {
+  'Belanda':'Netherlands','Swedia':'Sweden','Jerman':'Germany',
+  'Pantai Gading':'Ivory Coast','Jepang':'Japan','Prancis':'France',
+  'Spanyol':'Spain','Inggris':'England','Portugal':'Portugal',
+  'Argentina':'Argentina','Brasil':'Brazil','Mexico':'Mexico',
+  'Ekuador':'Ecuador','Tunisia':'Tunisia','Korea Selatan':'South Korea',
+  'Korea':'South Korea','Ceko':'Czechia','Afrika Selatan':'South Africa',
+  'Curaçao':'Curaçao','Maroko':'Morocco','Haiti':'Haiti',
+  'Skotlandia':'Scotland','Kanada':'Canada','Bosnia':'Bosnia & Herz.',
+  'Qatar':'Qatar','Swiss':'Switzerland','Amerika Serikat':'USA',
+  'Amerika':'USA','Paraguay':'Paraguay','Australia':'Australia',
+  'Turki':'Türkiye','Uruguay':'Uruguay','Arab Saudi':'Saudi Arabia',
+  'Tanjung Verde':'Cape Verde','Iran':'Iran','Selandia Baru':'New Zealand',
+  'Mesir':'Egypt','Senegal':'Senegal','Irak':'Iraq','Norwegia':'Norway',
+  'Aljazair':'Algeria','Austria':'Austria','Yordania':'Jordan',
+  'Kroasia':'Croatia','Ghana':'Ghana','Panama':'Panama',
+  'Uzbekistan':'Uzbekistan','Kolombia':'Colombia','RD Kongo':'DR Congo',
+  'Belgia':'Belgium',
+};
+
+function normalizeIdName(name) {
+  return ID_TO_EN[name] || name;
+}
+
+async function syncScoresFromApiSkor() {
+  try {
+    const res = await fetch(PROXY_API + '?type=skor');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.data) return;
+
+    let updated = false;
+    data.data.forEach(up => {
+      const homeEn = normalizeIdName(up.home);
+      const awayEn = normalizeIdName(up.away);
+      const match = MATCHES.find(m =>
+        m.home.localeCompare(homeEn, undefined, { sensitivity:'base' }) === 0 &&
+        m.away.localeCompare(awayEn, undefined, { sensitivity:'base' }) === 0
+      );
+      if (!match) return;
+
+      if (up.home_score !== null && up.away_score !== null) {
+        if (match.homeScore !== up.home_score || match.awayScore !== up.away_score) {
+          match.homeScore = up.home_score;
+          match.awayScore = up.away_score;
+          updated = true;
+        }
+      }
+      if (up.status === 'FT' && match.status !== 'FT') {
+        match.status = 'FT';
+        updated = true;
+      } else if (up.status === 'LIVE' && match.status === 'NS') {
+        match.status = 'LIVE';
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      renderList();
+      if (window.currentMatch) {
+        const fresh = MATCHES.find(m => m.id === window.currentMatch.id);
+        if (fresh && window.selectMatch) window.selectMatch(fresh.id);
+      }
+    }
+  } catch (e) {
+    // Silent fail
   }
 }
 

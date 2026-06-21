@@ -14,7 +14,7 @@ const UPSTREAM_BASE = 'https://stream.mjr-dev.cloud/wc26';
 
 export async function handler(event) {
   const params = event.queryStringParameters || {};
-  const type = params.type === 'upcoming' ? 'api_upcoming.php' : 'api.php';
+  const type = params.type === 'upcoming' ? 'api_upcoming.php' : params.type === 'skor' ? 'api_skor.php' : 'api.php';
   const url = `${UPSTREAM_BASE}/${type}`;
 
   // Set timeout 15 detik biar ga ngantung
