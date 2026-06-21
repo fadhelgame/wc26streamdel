@@ -13,6 +13,8 @@
   --ink-muted:   oklch(0.35 0.02 260);
   --accent:      oklch(0.87 0.19 145);
   --accent-dim:  oklch(0.6 0.12 145);
+  --accent-date: oklch(0.84 0.14 85);
+  --accent-date-dim: oklch(0.6 0.1 85);
   --live:        oklch(0.7 0.2 25);
   --border:      oklch(0.18 0.015 260);
   --border-focus: oklch(0.87 0.19 145);
@@ -178,11 +180,19 @@ html, body {
   text-transform: uppercase;
   padding: var(--space-md) var(--space-md) var(--space-xs);
   background: var(--paper);
-  color: var(--ink-muted);
+  color: var(--accent-date);
   border-bottom: 1px solid var(--border);
   margin: 0;
+  position: relative;
+}
+.day-label::before {
+  content: '── ';
+  color: var(--accent-date-dim);
+  font-weight: 400;
+  letter-spacing: 0;
 }
 .live-section-label { color: var(--live); }
+.live-section-label::before { content: none; }
 .live-pulse {
   width: 6px; height: 6px;
   background: var(--live);

@@ -244,7 +244,7 @@ function renderList() {
       const dayName = days[wib.getUTCDay()];
       const jam = fmtWIBtime(nextMatch.utc);
       const tgl = `${dayName}, ${wib.getUTCDate()} ${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][wib.getUTCMonth()]}`;
-      html += `<div class="live-section-label" style="color:var(--live)">🔜 Selanjutnya — ${tgl} ${jam} WIB</div>`;
+      html += `<div class="live-section-label" style="color:var(--accent-date)">🔜 Selanjutnya — ${tgl} ${jam} WIB</div>`;
       html += buildCard(nextMatch);
     }
   }
