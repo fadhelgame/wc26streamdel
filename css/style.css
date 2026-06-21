@@ -25,13 +25,13 @@
   --space-xs: 5px;  --space-sm: 10px;  --space-md: 18px;
   --space-lg: 28px; --space-xl: 36px; --space-2xl: 54px;
 
-  --text-xs:   1rem;
-  --text-sm:   1.15rem;
-  --text-base: 1.25rem;
-  --text-lg:   1.4rem;
-  --text-xl:   1.8rem;
-  --text-2xl:  2.3rem;
-  --text-3xl:  3rem;
+  --text-xs:   0.85rem;
+  --text-sm:   0.98rem;
+  --text-base: 1.05rem;
+  --text-lg:   1.2rem;
+  --text-xl:   1.5rem;
+  --text-2xl:  2rem;
+  --text-3xl:  2.55rem;
 
   --radius-sm: 8px;
   --radius-md: 12px;
