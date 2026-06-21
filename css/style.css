@@ -17,8 +17,8 @@
   --border:      oklch(0.18 0.015 260);
   --border-focus: oklch(0.87 0.19 145);
 
-  --font-display: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
-  --font-body:    'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+  --font-display: 'JetBrains Mono', monospace;
+  --font-body:    'JetBrains Mono', monospace;
 
   --space-xs: 5px;  --space-sm: 10px;  --space-md: 18px;
   --space-lg: 28px; --space-xl: 36px; --space-2xl: 54px;
