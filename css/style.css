@@ -179,7 +179,7 @@ html, body {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: var(--space-md) var(--space-md) var(--space-xs);
-  background: var(--paper);
+  background: oklch(0.12 0.015 260);
   color: var(--accent-date);
   border-bottom: 1px solid var(--border);
   margin: 0;
