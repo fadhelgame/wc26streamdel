@@ -33,6 +33,7 @@ function init() {
   renderList();
   syncScoresFromESPN(); // fetch live ESPN scores on load
   syncScoresFromApiSkor(); // fetch skor dari api_skor
+  fetchScheduleFromOpenFootball(); // auto-update jadwal dari openfootball
 }
 
 // ─── POLLING ENGINE ───────────────────────────────────────────────────────────
@@ -56,6 +57,12 @@ function poll() {
 
   // ── API Skor sync — dari stream.mjr-dev.cloud ──────────────────────────
   syncScoresFromApiSkor();
+
+  // ── Refresh jadwal dari openfootball (cache 30 menit, hemat) ───────
+  const lastScheduleFetch = localStorage.getItem('wc26_schedule_last_fetch');
+  if (!lastScheduleFetch || Date.now() - parseInt(lastScheduleFetch) > 30 * 60 * 1000) {
+    fetchScheduleFromOpenFootball();
+  }
 
   // ── Tapi fetch ke API cuma kalo ada match yg relevan ────────────────
   if (!hasUpcomingMatches()) {

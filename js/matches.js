@@ -23,7 +23,156 @@ function genStreams(code) {
   }));
 }
 
-// ─── AUTO-FETCH DARI LIVE API (gantikan match code tebakan!) ────────────────
+// ─── AUTO-FETCH JADWAL DARI OPENFOOTBALL (free, no key) ────────────────
+// Sumber: https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json
+// Jalan otomatis pas init + tiap 30 menit. Cache di localStorage.
+const SCHEDULE_API = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+const SCHEDULE_CACHE_KEY = 'wc26_schedule_cache';
+const SCHEDULE_CACHE_TTL = 30 * 60 * 1000; // 30 menit
+
+// Map nama tim dari openfootball → matches.js
+const OF_NAME_MAP = {
+  'Czech Republic': 'Czechia',
+  'Bosnia & Herzegovina': 'Bosnia & Herz.',
+  'Korea Republic': 'South Korea',
+  'USA': 'USA',
+};
+
+function ofName(n) { return OF_NAME_MAP[n] || n; }
+
+// Parse "13:00 UTC-6" → UTC ISO string "2026-06-11T19:00:00Z"
+function parseOfTime(dateStr, timeStr) {
+  if (!timeStr) return null;
+  const m = timeStr.match(/^(\d{1,2}):(\d{2})\s*UTC([+-]\d{1,2})$/);
+  if (!m) return null;
+  const hour = parseInt(m[1]);
+  const min = parseInt(m[2]);
+  const offset = parseInt(m[3]); // UTC-6 = -6, UTC+2 = +2
+  // Local time = hour:min at offset. UTC = local - offset
+  let utcHour = hour - offset;
+  let utcDay = parseInt(dateStr.split('-')[2]);
+  if (utcHour < 0) { utcHour += 24; utcDay -= 1; }
+  if (utcHour >= 24) { utcHour -= 24; utcDay += 1; }
+  const d = new Date(dateStr + 'T12:00:00Z'); // just to get year/month
+  const yr = d.getUTCFullYear();
+  const mo = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const dy = String(utcDay).padStart(2, '0');
+  const hh = String(utcHour).padStart(2, '0');
+  const mm = String(min).padStart(2, '0');
+  return `${yr}-${mo}-${dy}T${hh}:${mm}:00Z`;
+}
+
+// Mapping round name ke matchday number
+function roundToMd(round) {
+  const m = round.match(/Matchday (\d+)/i);
+  if (m) return parseInt(m[1]);
+  return 0;
+}
+
+// Mapping round name ke stage
+function roundToStage(round) {
+  if (/matchday/i.test(round)) return 'group';
+  if (/round of 32|last 32|r32/i.test(round)) return 'r32';
+  if (/round of 16|last 16|r16/i.test(round)) return 'r16';
+  if (/quarter/i.test(round)) return 'qf';
+  if (/semi/i.test(round)) return 'sf';
+  if (/third|3rd/i.test(round)) return '3p';
+  if (/final/i.test(round)) return 'final';
+  return 'other';
+}
+
+async function fetchScheduleFromOpenFootball() {
+  try {
+    // Cek cache dulu
+    const cached = localStorage.getItem(SCHEDULE_CACHE_KEY);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Date.now() - parsed.ts < SCHEDULE_CACHE_TTL) {
+          applySchedule(parsed.matches);
+          return;
+        }
+      } catch(e) {}
+    }
+
+    const res = await fetch(SCHEDULE_API);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const raw = data.matches || [];
+
+    // Cache
+    localStorage.setItem(SCHEDULE_CACHE_KEY, JSON.stringify({ ts: Date.now(), matches: raw }));
+    localStorage.setItem('wc26_schedule_last_fetch', String(Date.now()));
+
+    // Filter hanya yang punya team1 & team2 (skip placeholder)
+    const valid = raw.filter(m => m.team1 && m.team2 && !m.team1.startsWith('W') && !m.team1.startsWith('L'));
+    applySchedule(valid);
+  } catch (e) {
+    console.warn('Auto-fetch jadwal gagal:', e);
+  }
+}
+
+function applySchedule(ofMatches) {
+  // Hapus semua match lama & ganti dengan data dari openfootball
+  // Tapi preserve live scores yg udah kedetect dari ESPN/api_skor
+  const oldScores = {};
+  MATCHES.forEach(m => {
+    const key = m.home + '_' + m.away;
+    oldScores[key] = { homeScore: m.homeScore, awayScore: m.awayScore, status: m.status, streams: m.streams };
+  });
+
+  const GROUP_MAP = {
+    'Group A':'A','Group B':'B','Group C':'C','Group D':'D','Group E':'E',
+    'Group F':'F','Group G':'G','Group H':'H','Group I':'I','Group J':'J',
+    'Group K':'K','Group L':'L',
+  };
+
+  const newMatches = [];
+  let id = 1;
+
+  ofMatches.forEach(of => {
+    const home = ofName(of.team1);
+    const away = ofName(of.team2);
+    const utc = parseOfTime(of.date, of.time);
+    if (!utc) return;
+
+    const group = GROUP_MAP[of.group] || '';
+    const md = roundToMd(of.round);
+    const stage = roundToStage(of.round);
+
+    // Ambil skor lama kalo ada
+    const key = home + '_' + away;
+    const old = oldScores[key] || {};
+
+    newMatches.push({
+      id: id++,
+      group: group,
+      md: md,
+      stage: stage,
+      home: home,
+      away: away,
+      utc: utc,
+      venue: of.ground || '',
+      homeScore: old.homeScore !== undefined ? old.homeScore : 
+                  (of.score && of.score.ft ? of.score.ft[0] : null),
+      awayScore: old.awayScore !== undefined ? old.awayScore :
+                  (of.score && of.score.ft ? of.score.ft[1] : null),
+      status: old.status || (of.score && of.score.ft ? 'FT' : 'NS'),
+      streams: old.streams || [],
+    });
+  });
+
+  // Ganti global MATCHES
+  MATCHES.length = 0;
+  MATCHES.push(...newMatches);
+
+  // Re-render
+  renderList();
+  if (window.currentMatch) {
+    const fresh = MATCHES.find(m => m.id === window.currentMatch.id);
+    if (fresh && window.selectMatch) window.selectMatch(fresh.id);
+  }
+}
 // Fungsi ini dipanggil otomatis tiap 60 detik (pas ada match) atau manual.
 // Otomatis cooldown 2 menit kalo stream udah kedetect, hemat invocation.
 let lastFetchTime = 0;
