@@ -121,12 +121,28 @@ const ALT_CHANNELS = [
     url:'https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8' },
   // ── RTB (Radio Televisyen Brunei) — Siaran World Cup via CloudFront ──
   // Sumber: stream.mjr-dev.cloud/wc26/cloudfront.php proxy
-  // RTB 2 Sports (rtb2) — saluran olahraga Brunei
-  { label:'RTB 2 Sports 🇧🇳', note:'Brunei — Sports HD',
+  // ── RTB 2 Sports — kualitas bisa dipilih user ──
+  { label:'RTB 2 Sports 🎯 Auto', note:'Brunei — ABR',
     url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtb2&file=playlist.m3u8' },
-  // RTB Go (rtbgo) — saluran utama Brunei
-  { label:'RTB Go 🇧🇳', note:'Brunei — HD',
+  { label:'RTB 2 Sports 1080p', note:'FHD',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtb2&file=chunklist_b4096000_slENG.m3u8' },
+  { label:'RTB 2 Sports 720p', note:'HD',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtb2&file=chunklist_b2196000_sleng.m3u8' },
+  { label:'RTB 2 Sports 480p', note:'SD',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtb2&file=chunklist_b1120000_sleng.m3u8' },
+  { label:'RTB 2 Sports 360p', note:'Low',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtb2&file=chunklist_b608000_sleng.m3u8' },
+  // ── RTB Go — kualitas bisa dipilih user ──
+  { label:'RTB Go 🎯 Auto', note:'Brunei — ABR',
     url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtbgo&file=playlist.m3u8' },
+  { label:'RTB Go 1080p', note:'FHD',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtbgo&file=chunklist_b4096000_slENG.m3u8' },
+  { label:'RTB Go 720p', note:'HD',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtbgo&file=chunklist_b2196000_sleng.m3u8' },
+  { label:'RTB Go 480p', note:'SD',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtbgo&file=chunklist_b1120000_sleng.m3u8' },
+  { label:'RTB Go 360p', note:'Low',
+    url:'https://stream.mjr-dev.cloud/wc26/cloudfront.php?id=rtbgo&file=chunklist_b608000_sleng.m3u8' },
 ];
 
 // ─── FLAGS ───────────────────────────────────────────────────────────────────
